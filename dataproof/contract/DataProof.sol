@@ -59,39 +59,32 @@ contract ProofDataPossession {
 
 	//下载方可以发起文件存在性挑战
 	function Challenge(bytes32 file, bytes32 _nonce) public {
-		string memory index = strConcat(_nonce, file);
+		string memory index; // = strConcat(_nonce, file);
 		ChallengeList[index] = challenge({owner:msg.sender, file:file, nonce:_nonce, valid:true});
 	}
 
 	//存储节点获得挑战申请
-	function GetChallengeList() view public returns (challenge[] memory){
-		challenge[] memory cList;
-		/*  todo: walk around
-				for(uint32 i=0;i<ChallengeList.keys.length; i++){
-					if(ChallengeList[ChallengeList.keys[i]].valid == true){
-						cList.push(ChallengeList[ChallengeList.keys[i]]);
-					}
-				}
-		*/
-		return cList;
+	//function GetChallengeList() public pure returns (challenge[] memory){
+	function GetChallengeList() public {
+		/*
+                challenge[] memory cList;
+                        for(uint32 i=0;i<ChallengeList.keys.length; i++){
+                            if(ChallengeList[ChallengeList.keys[i]].valid == true){
+                                cList.push(ChallengeList[ChallengeList.keys[i]]);
+                            }
+                        }
+        */
+		//return cList;
 	}
 
 	//存储节点提供数据持有性证明
 	function ProofProvide(bytes32 _file, bytes32 _nonce, bytes32 _proof) public {
+/*
 		string memory index = strConcat(_nonce, _file);
 		mapping (string => proof[]) storage ref = ProofList;
 		ref[index] = proof({owner:msg.sender, file:_file, nonce:_nonce, value:_proof, status:ProofStatus.ToBeVerified});
+*/
 	}
-
-	//下载节点验证文件有效性，触发分润
-	function EmitProfit(bytes32 file, bytes32 _nonce, bytes32 _proof, address node) public {
-		string memory index = strConcat(_nonce, file);
-		mapping (string => proof[]) storage ref = ProofList;
-		if (_proof==ref[index].value&&node==ref[index].owner){
-			node.transfer(ProfitChallengeSuccess);
-		}
-	}
-
 	//当存储节点提供假数据时，会有惩罚措施; 举报node提供的file是错误的，合约会发起挑战验证；
 	function Punish(address node, address file)public{
 
@@ -103,16 +96,4 @@ contract ProofDataPossession {
 		selfdestruct(msg.sender);
 	}
 
-	//字符串拼接
-	function strConcat(bytes32 _a, bytes32 _b) internal returns (string memory){
-		bytes memory _ba = bytes(_a);
-		bytes memory _bb = bytes(_b);
-		string memory ret = new string(_ba.length + _bb.length);
-		bytes memory bret = bytes(ret);
-		uint k = 0;
-		for (uint i = 0; i < _ba.length; i++)bret[k++] = _ba[i];
-		for (uint i = 0; i < _bb.length; i++) bret[k++] = _bb[i];
-		return string(ret);
-        //return _a.toSlice().concat(_b.toSlice());
-	}
 }

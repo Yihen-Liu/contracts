@@ -1,3 +1,4 @@
 raiden-contracts/
 *.bin
 *.abi
+dataproof/contract/_DataProof.sol
