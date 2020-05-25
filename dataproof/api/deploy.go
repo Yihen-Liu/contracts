@@ -41,7 +41,7 @@ const key = `
 }
 `
 
-func main() {
+func Deploy() {
 	// Create an IPC based RPC connection to a remote node and an authorized transactor
 	conn, err := ethclient.Dial("~/.ethereum/geth.ipc")
 	if err != nil {
