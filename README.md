@@ -1,6 +1,6 @@
-# contracts
+# ETHFSx Contracts ![](https://img.shields.io/badge/status-wip-orange.svg?style=flat-square) 
 
-##Abstract
+## Abstract
 The core function provided by the contract is a data holding contract, in order to decentralize storage system services; it mainly includes: 
 - token pledge;
 - storage challenge; 
