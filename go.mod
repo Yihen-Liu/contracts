@@ -1,4 +1,4 @@
-module github.com/ETHFSx/contracts
+module github.com/Yihen/contracts
 
 go 1.13
 
