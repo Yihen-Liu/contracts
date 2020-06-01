@@ -4,7 +4,6 @@
 package proof
 
 import (
-	"math/big"
 	"strings"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
@@ -14,10 +13,10 @@ import (
 )
 
 // ProofABI is the input ABI used to generate the binding from.
-const ProofABI = "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"file\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"_nonce\",\"type\":\"bytes32\"}],\"name\":\"Challenge\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"name\":\"ChallengeList\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"file\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"nonce\",\"type\":\"bytes32\"},{\"internalType\":\"bool\",\"name\":\"valid\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"name\":\"FilePledge\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"uint32\",\"name\":\"amount\",\"type\":\"uint32\"},{\"internalType\":\"bytes32\",\"name\":\"hash\",\"type\":\"bytes32\"},{\"internalType\":\"bool\",\"name\":\"valid\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"GetChallengeList\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"NodeLeave\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"NodePledge\",\"outputs\":[{\"internalType\":\"uint32\",\"name\":\"\",\"type\":\"uint32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"amount\",\"type\":\"uint32\"},{\"internalType\":\"bytes32\",\"name\":\"file\",\"type\":\"bytes32\"}],\"name\":\"PledgeForFile\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"amount\",\"type\":\"uint32\"},{\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"}],\"name\":\"PledgeForNode\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"ProofList\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"bytes32\",\"name\":\"file\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"nonce\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"value\",\"type\":\"bytes32\"},{\"internalType\":\"enumProofDataPossession.ProofStatus\",\"name\":\"status\",\"type\":\"uint8\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"_file\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"_nonce\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"_proof\",\"type\":\"bytes32\"}],\"name\":\"ProofProvide\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"file\",\"type\":\"address\"}],\"name\":\"Punish\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"destroy\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]"
+const ProofABI = "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_file\",\"type\":\"string\"}],\"name\":\"Challenge\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"name\":\"ChallengeList\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"file\",\"type\":\"string\"},{\"internalType\":\"bool\",\"name\":\"valid\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"name\":\"FilePledge\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"uint32\",\"name\":\"amount\",\"type\":\"uint32\"},{\"internalType\":\"string\",\"name\":\"hash\",\"type\":\"string\"},{\"internalType\":\"bool\",\"name\":\"valid\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"GetChallengeList\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_file\",\"type\":\"string\"}],\"name\":\"GetChallengeResponse\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"NodeLeave\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"NodePledge\",\"outputs\":[{\"internalType\":\"uint32\",\"name\":\"\",\"type\":\"uint32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"amount\",\"type\":\"uint32\"},{\"internalType\":\"string\",\"name\":\"file\",\"type\":\"string\"}],\"name\":\"PledgeForFile\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint32\",\"name\":\"amount\",\"type\":\"uint32\"},{\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"}],\"name\":\"PledgeForNode\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"name\":\"ProofList\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"file\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"value\",\"type\":\"string\"},{\"internalType\":\"uint32\",\"name\":\"exist\",\"type\":\"uint32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_file\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_proof\",\"type\":\"string\"}],\"name\":\"ProofProvide\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"node\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"file\",\"type\":\"address\"}],\"name\":\"Punish\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"destroy\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]"
 
 // ProofBin is the compiled bytecode used for deploying new contracts.
-const ProofBin = `60806040526103e8600460146101000a81548163ffffffff021916908363ffffffff1602179055503480156100345760006000fd5b505b33600460006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055505b61007d565b6110b68061008c6000396000f3fe6080604052600436106100c65760003560e01c80638da5cb5b1161007f578063b5453e3411610059578063b5453e3414610255578063b8aeb13614610271578063bde4efe4146102b2578063f8b21ae6146102ce576100c6565b80638da5cb5b146101e75780639bc49c4914610213578063a59909961461023d576100c6565b8063068fc622146100cc5780630bd8dbe41461010e5780630cc334981461012657806311ec5d80146101675780635a7067711461019157806383197ef0146101cf576100c6565b60006000fd5b3480156100d95760006000fd5b506100f460048036038101906100ef9190610bbe565b6102f8565b604051610105959493929190610dd1565b60405180910390f35b34801561011b5760006000fd5b5061012461039d565b005b3480156101335760006000fd5b5061014e60048036038101906101499190610abe565b6104a2565b60405161015e9493929190610e25565b60405180910390f35b3480156101745760006000fd5b5061018f600480360381019061018a9190610a7f565b610515565b005b34801561019e5760006000fd5b506101b960048036038101906101b49190610a54565b61051a565b6040516101c69190610e8c565b60405180910390f35b3480156101dc5760006000fd5b506101e5610542565b005b3480156101f45760006000fd5b506101fd6105ba565b60405161020a9190610d6f565b60405180910390f35b3480156102205760006000fd5b5061023b60048036038101906102369190610ae9565b6105e0565b005b34801561024a5760006000fd5b506102536106e1565b005b61026f600480360381019061026a9190610c55565b6106e4565b005b34801561027e5760006000fd5b5061029960048036038101906102949190610b7a565b610856565b6040516102a99493929190610d8b565b60405180910390f35b6102cc60048036038101906102c79190610c16565b6108d2565b005b3480156102db5760006000fd5b506102f660048036038101906102f19190610b28565b610999565b005b6003600050828051602081018201805184825260208301602085012081835280955050505050506000508181548110151561032f57fe5b906000526020600020906005020160005b91509150508060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff16908060010160005054908060020160005054908060030160005054908060040160009054906101000a900460ff16905085565b3373ffffffffffffffffffffffffffffffffffffffff166108fc600060005060003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060009054906101000a900463ffffffff1663ffffffff169081150290604051600060405180830381858888f1935050505015801561043c573d600060003e3d6000fd5b506000600060005060003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548163ffffffff021916908363ffffffff1602179055505b565b60016000506020528060005260406000206000915090508060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff16908060000160149054906101000a900463ffffffff16908060010160005054908060020160009054906101000a900460ff16905084565b5b5050565b600060005060205280600052604060002060009150909054906101000a900463ffffffff1681565b600460009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561059f5760006000fd5b3373ffffffffffffffffffffffffffffffffffffffff16ff5b565b600460009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b606060405180608001604052803373ffffffffffffffffffffffffffffffffffffffff16815260200184600019168152602001836000191681526020016001151581526020015060026000508260405161063a9190610d57565b908152602001604051809103902060005060008201518160000160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550602082015181600101600050906000191690556040820151816002016000509060001916905560608201518160030160006101000a81548160ff021916908315150217905550905050505b5050565b5b565b8163ffffffff163373ffffffffffffffffffffffffffffffffffffffff1631111515610745576040517f08c379a000000000000000000000000000000000000000000000000000000000815260040161073c90610e6b565b60405180910390fd5b60405180608001604052803373ffffffffffffffffffffffffffffffffffffffff1681526020018363ffffffff168152602001826000191681526020016001151581526020015060016000506000836000191660001916815260200190815260200160002060005060008201518160000160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff16021790555060208201518160000160146101000a81548163ffffffff021916908363ffffffff1602179055506040820151816001016000509060001916905560608201518160020160006101000a81548160ff0219169083151502179055509050505b5050565b6002600050818051602081018201805184825260208301602085012081835280955050505050506000915090508060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff16908060010160005054908060020160005054908060030160009054906101000a900460ff16905084565b8163ffffffff163373ffffffffffffffffffffffffffffffffffffffff1631111515610933576040517f08c379a000000000000000000000000000000000000000000000000000000000815260040161092a90610e6b565b60405180910390fd5b81600060005060008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548163ffffffff021916908363ffffffff1602179055505b5050565b5b5050505661107f565b6000813590506109b281611013565b5b92915050565b6000813590506109c88161102e565b5b92915050565b600082601f83011215156109e35760006000fd5b81356109f66109f182610ed7565b610ea8565b91508082526020830160208301858383011115610a135760006000fd5b610a1e838284610fbe565b5050505b92915050565b600081359050610a3781611049565b5b92915050565b600081359050610a4d81611064565b5b92915050565b600060208284031215610a675760006000fd5b6000610a75848285016109a3565b9150505b92915050565b6000600060408385031215610a945760006000fd5b6000610aa2858286016109a3565b9250506020610ab3858286016109a3565b9150505b9250929050565b600060208284031215610ad15760006000fd5b6000610adf848285016109b9565b9150505b92915050565b6000600060408385031215610afe5760006000fd5b6000610b0c858286016109b9565b9250506020610b1d858286016109b9565b9150505b9250929050565b60006000600060608486031215610b3f5760006000fd5b6000610b4d868287016109b9565b9350506020610b5e868287016109b9565b9250506040610b6f868287016109b9565b9150505b9250925092565b600060208284031215610b8d5760006000fd5b600082013567ffffffffffffffff811115610ba85760006000fd5b610bb4848285016109cf565b9150505b92915050565b6000600060408385031215610bd35760006000fd5b600083013567ffffffffffffffff811115610bee5760006000fd5b610bfa858286016109cf565b9250506020610c0b85828601610a28565b9150505b9250929050565b6000600060408385031215610c2b5760006000fd5b6000610c3985828601610a3e565b9250506020610c4a858286016109a3565b9150505b9250929050565b6000600060408385031215610c6a5760006000fd5b6000610c7885828601610a3e565b9250506020610c89858286016109b9565b9150505b9250929050565b610c9d81610f2f565b82525b5050565b610cad81610f42565b82525b5050565b610cbd81610f4f565b82525b5050565b610ccd81610fab565b82525b5050565b6000610cdf82610f05565b610ce98185610f23565b9350610cf9818560208601610fce565b8084019150505b92915050565b6000610d13601583610f11565b91507f62616c616e6365206973206e6f7420656e6f756768000000000000000000000060008301526020820190505b919050565b610d5081610f9a565b82525b5050565b6000610d638284610cd4565b91508190505b92915050565b6000602082019050610d846000830184610c94565b5b92915050565b6000608082019050610da06000830187610c94565b610dad6020830186610cb4565b610dba6040830185610cb4565b610dc76060830184610ca4565b5b95945050505050565b600060a082019050610de66000830188610c94565b610df36020830187610cb4565b610e006040830186610cb4565b610e0d6060830185610cb4565b610e1a6080830184610cc4565b5b9695505050505050565b6000608082019050610e3a6000830187610c94565b610e476020830186610d47565b610e546040830185610cb4565b610e616060830184610ca4565b5b95945050505050565b60006020820190508181036000830152610e8481610d06565b90505b919050565b6000602082019050610ea16000830184610d47565b5b92915050565b6000604051905081810181811067ffffffffffffffff82111715610ecc5760006000fd5b80604052505b919050565b600067ffffffffffffffff821115610eef5760006000fd5b601f19601f83011690506020810190505b919050565b6000815190505b919050565b60008282526020820190505b92915050565b60008190505b92915050565b6000610f3a82610f6e565b90505b919050565b600081151590505b919050565b60008190505b919050565b6000819050610f6882611003565b5b919050565b600073ffffffffffffffffffffffffffffffffffffffff821690505b919050565b60008190505b919050565b600063ffffffff821690505b919050565b6000610fb682610f5a565b90505b919050565b828183376000838301525b505050565b60005b83811015610fed5780820151818401525b602081019050610fd1565b83811115610ffc576000848401525b505b505050565b60048110151561100f57fe5b5b50565b61101c81610f2f565b8114151561102a5760006000fd5b5b50565b61103781610f4f565b811415156110455760006000fd5b5b50565b61105281610f8f565b811415156110605760006000fd5b5b50565b61106d81610f9a565b8114151561107b5760006000fd5b5b50565bfea26469706673582212204f66802a2069bc722290e5813526cad08c5dfac8e4c04489e006be7cf8a442e764736f6c63430006060033`
+const ProofBin = `60806040526103e8600460146101000a81548163ffffffff021916908363ffffffff1602179055503480156100345760006000fd5b505b33600460006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055505b61007d565b6115308061008c6000396000f3fe6080604052600436106100e15760003560e01c80638337846a1161007f578063b8aeb13611610059578063b8aeb13614610296578063bde4efe4146102d6578063d66a3121146102f2578063e5fe233514610333576100e1565b80638337846a146102145780638da5cb5b14610252578063a59909961461027e576100e1565b80635a706771116100bb5780635a7067711461015357806360dadb4e1461019157806381a53877146101d257806383197ef0146101fc576100e1565b80630bd8dbe4146100e75780630d9cb378146100ff57806311ec5d8014610129576100e1565b60006000fd5b3480156100f45760006000fd5b506100fd61034f565b005b34801561010c5760006000fd5b506101276004803603810190610122919061105d565b610454565b005b3480156101365760006000fd5b50610151600480360381019061014c9190610fda565b6105fa565b005b3480156101605760006000fd5b5061017b60048036038101906101769190610faf565b6105ff565b6040516101889190611377565b60405180910390f35b34801561019e5760006000fd5b506101b960048036038101906101b49190611019565b610627565b6040516101c99493929190611309565b60405180910390f35b3480156101df5760006000fd5b506101fa60048036038101906101f59190611019565b610748565b005b3480156102095760006000fd5b50610212610831565b005b3480156102215760006000fd5b5061023c60048036038101906102379190611019565b6108a9565b604051610249919061125a565b60405180910390f35b34801561025f5760006000fd5b5061026861094e565b604051610275919061125a565b60405180910390f35b34801561028b5760006000fd5b50610294610974565b005b3480156102a35760006000fd5b506102be60048036038101906102b99190611019565b610977565b6040516102cd93929190611276565b60405180910390f35b6102f060048036038101906102eb91906110ce565b610a82565b005b3480156102ff5760006000fd5b5061031a60048036038101906103159190611019565b610b49565b60405161032a94939291906112b5565b60405180910390f35b61034d6004803603810190610348919061110d565b610cf8565b005b3373ffffffffffffffffffffffffffffffffffffffff166108fc600060005060003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060009054906101000a900463ffffffff1663ffffffff169081150290604051600060405180830381858888f193505050501580156103ee573d600060003e3d6000fd5b506000600060005060003373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548163ffffffff021916908363ffffffff1602179055505b565b60016003600050836040516104699190611242565b908152602001604051809103902060005060030160009054906101000a900463ffffffff1663ffffffff16141561049f576105f6565b60006002600050836040516104b49190611242565b908152602001604051809103902060005060020160006101000a81548160ff02191690831515021790555060405180608001604052803373ffffffffffffffffffffffffffffffffffffffff168152602001838152602001828152602001600163ffffffff168152602001506003600050836040516105339190611242565b908152602001604051809103902060005060008201518160000160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff16021790555060208201518160010160005090805190602001906105aa929190610e76565b5060408201518160020160005090805190602001906105ca929190610e76565b5060608201518160030160006101000a81548163ffffffff021916908363ffffffff1602179055509050505b5050565b5b5050565b600060005060205280600052604060002060009150909054906101000a900463ffffffff1681565b6001600050818051602081018201805184825260208301602085012081835280955050505050506000915090508060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff16908060000160149054906101000a900463ffffffff1690806001016000508054600181600116156101000203166002900480601f01602080910402602001604051908101604052809291908181526020018280546001816001161561010002031660029004801561072b5780601f106107005761010080835404028352916020019161072b565b820191906000526020600020905b81548152906001019060200180831161070e57829003601f168201915b5050505050908060020160009054906101000a900460ff16905084565b60405180606001604052803373ffffffffffffffffffffffffffffffffffffffff168152602001828152602001600115158152602001506002600050826040516107929190611242565b908152602001604051809103902060005060008201518160000160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055506020820151816001016000509080519060200190610809929190610e76565b5060408201518160020160006101000a81548160ff0219169083151502179055509050505b50565b600460009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614151561088e5760006000fd5b3373ffffffffffffffffffffffffffffffffffffffff16ff5b565b600060006003600050836040516108c09190611242565b908152602001604051809103902060005060030160009054906101000a900463ffffffff1663ffffffff1614156108fa5760009050610949565b60036000508260405161090d9190611242565b908152602001604051809103902060005060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff169050610949565b919050565b600460009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b5b565b6002600050818051602081018201805184825260208301602085012081835280955050505050506000915090508060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1690806001016000508054600181600116156101000203166002900480601f016020809104026020016040519081016040528092919081815260200182805460018160011615610100020316600290048015610a655780601f10610a3a57610100808354040283529160200191610a65565b820191906000526020600020905b815481529060010190602001808311610a4857829003601f168201915b5050505050908060020160009054906101000a900460ff16905083565b8163ffffffff163373ffffffffffffffffffffffffffffffffffffffff1631111515610ae3576040517f08c379a0000000000000000000000000000000000000000000000000000000008152600401610ada90611356565b60405180910390fd5b81600060005060008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548163ffffffff021916908363ffffffff1602179055505b5050565b6003600050818051602081018201805184825260208301602085012081835280955050505050506000915090508060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1690806001016000508054600181600116156101000203166002900480601f016020809104026020016040519081016040528092919081815260200182805460018160011615610100020316600290048015610c375780601f10610c0c57610100808354040283529160200191610c37565b820191906000526020600020905b815481529060010190602001808311610c1a57829003601f168201915b505050505090806002016000508054600181600116156101000203166002900480601f016020809104026020016040519081016040528092919081815260200182805460018160011615610100020316600290048015610cd85780601f10610cad57610100808354040283529160200191610cd8565b820191906000526020600020905b815481529060010190602001808311610cbb57829003601f168201915b5050505050908060030160009054906101000a900463ffffffff16905084565b8163ffffffff163373ffffffffffffffffffffffffffffffffffffffff1631111515610d59576040517f08c379a0000000000000000000000000000000000000000000000000000000008152600401610d5090611356565b60405180910390fd5b60405180608001604052803373ffffffffffffffffffffffffffffffffffffffff1681526020018363ffffffff16815260200182815260200160011515815260200150600160005082604051610daf9190611242565b908152602001604051809103902060005060008201518160000160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff16021790555060208201518160000160146101000a81548163ffffffff021916908363ffffffff1602179055506040820151816001016000509080519060200190610e4d929190610e76565b5060608201518160020160006101000a81548160ff0219169083151502179055509050505b5050565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f10610eb757805160ff1916838001178555610eea565b82800160010185558215610eea579182015b82811115610ee95782518260005090905591602001919060010190610ec9565b5b509050610ef79190610efb565b5090565b610f239190610f05565b80821115610f1f5760008181506000905550600101610f05565b5090565b90566114f9565b600081359050610f39816114c3565b5b92915050565b600082601f8301121515610f545760006000fd5b8135610f67610f62826113c2565b611393565b91508082526020830160208301858383011115610f845760006000fd5b610f8f83828461146c565b5050505b92915050565b600081359050610fa8816114de565b5b92915050565b600060208284031215610fc25760006000fd5b6000610fd084828501610f2a565b9150505b92915050565b6000600060408385031215610fef5760006000fd5b6000610ffd85828601610f2a565b925050602061100e85828601610f2a565b9150505b9250929050565b60006020828403121561102c5760006000fd5b600082013567ffffffffffffffff8111156110475760006000fd5b61105384828501610f40565b9150505b92915050565b60006000604083850312156110725760006000fd5b600083013567ffffffffffffffff81111561108d5760006000fd5b61109985828601610f40565b925050602083013567ffffffffffffffff8111156110b75760006000fd5b6110c385828601610f40565b9150505b9250929050565b60006000604083850312156110e35760006000fd5b60006110f185828601610f99565b925050602061110285828601610f2a565b9150505b9250929050565b60006000604083850312156111225760006000fd5b600061113085828601610f99565b925050602083013567ffffffffffffffff81111561114e5760006000fd5b61115a85828601610f40565b9150505b9250929050565b61116e8161141a565b82525b5050565b61117e8161142d565b82525b5050565b6000611190826113f0565b61119a81856113fc565b93506111aa81856020860161147c565b6111b3816114b1565b84019150505b92915050565b60006111ca826113f0565b6111d4818561140e565b93506111e481856020860161147c565b8084019150505b92915050565b60006111fe6015836113fc565b91507f62616c616e6365206973206e6f7420656e6f756768000000000000000000000060008301526020820190505b919050565b61123b8161145b565b82525b5050565b600061124e82846111bf565b91508190505b92915050565b600060208201905061126f6000830184611165565b5b92915050565b600060608201905061128b6000830186611165565b818103602083015261129d8185611185565b90506112ac6040830184611175565b5b949350505050565b60006080820190506112ca6000830187611165565b81810360208301526112dc8186611185565b905081810360408301526112f08185611185565b90506112ff6060830184611232565b5b95945050505050565b600060808201905061131e6000830187611165565b61132b6020830186611232565b818103604083015261133d8185611185565b905061134c6060830184611175565b5b95945050505050565b6000602082019050818103600083015261136f816111f1565b90505b919050565b600060208201905061138c6000830184611232565b5b92915050565b6000604051905081810181811067ffffffffffffffff821117156113b75760006000fd5b80604052505b919050565b600067ffffffffffffffff8211156113da5760006000fd5b601f19601f83011690506020810190505b919050565b6000815190505b919050565b60008282526020820190505b92915050565b60008190505b92915050565b60006114258261143a565b90505b919050565b600081151590505b919050565b600073ffffffffffffffffffffffffffffffffffffffff821690505b919050565b600063ffffffff821690505b919050565b828183376000838301525b505050565b60005b8381101561149b5780820151818401525b60208101905061147f565b838111156114aa576000848401525b505b505050565b6000601f19601f83011690505b919050565b6114cc8161141a565b811415156114da5760006000fd5b5b50565b6114e78161145b565b811415156114f55760006000fd5b5b50565bfea26469706673582212205ac6cb171dfadd74545dfc9285e7a3b351c4cc03caf52b439f58ed407a38155564736f6c63430006060033`
 
 // DeployProof deploys a new Ethereum contract, binding an instance of Proof to it.
 func DeployProof(auth *bind.TransactOpts, backend bind.ContractBackend) (common.Address, *types.Transaction, *Proof, error) {
@@ -174,66 +173,66 @@ func (_Proof *ProofTransactorRaw) Transact(opts *bind.TransactOpts, method strin
 	return _Proof.Contract.contract.Transact(opts, method, params...)
 }
 
-// Challenge is a paid mutator transaction binding the contract method 0x9bc49c49.
+// Challenge is a paid mutator transaction binding the contract method 0x81a53877.
 //
-// Solidity: function Challenge(file bytes32, _nonce bytes32) returns()
-func (_Proof *ProofTransactor) Challenge(opts *bind.TransactOpts, file [32]byte, _nonce [32]byte) (*types.Transaction, error) {
-	return _Proof.contract.Transact(opts, "Challenge", file, _nonce)
+// Solidity: function Challenge(_file string) returns()
+func (_Proof *ProofTransactor) Challenge(opts *bind.TransactOpts, _file string) (*types.Transaction, error) {
+	return _Proof.contract.Transact(opts, "Challenge", _file)
 }
 
-// Challenge is a paid mutator transaction binding the contract method 0x9bc49c49.
+// Challenge is a paid mutator transaction binding the contract method 0x81a53877.
 //
-// Solidity: function Challenge(file bytes32, _nonce bytes32) returns()
-func (_Proof *ProofSession) Challenge(file [32]byte, _nonce [32]byte) (*types.Transaction, error) {
-	return _Proof.Contract.Challenge(&_Proof.TransactOpts, file, _nonce)
+// Solidity: function Challenge(_file string) returns()
+func (_Proof *ProofSession) Challenge(_file string) (*types.Transaction, error) {
+	return _Proof.Contract.Challenge(&_Proof.TransactOpts, _file)
 }
 
-// Challenge is a paid mutator transaction binding the contract method 0x9bc49c49.
+// Challenge is a paid mutator transaction binding the contract method 0x81a53877.
 //
-// Solidity: function Challenge(file bytes32, _nonce bytes32) returns()
-func (_Proof *ProofTransactorSession) Challenge(file [32]byte, _nonce [32]byte) (*types.Transaction, error) {
-	return _Proof.Contract.Challenge(&_Proof.TransactOpts, file, _nonce)
+// Solidity: function Challenge(_file string) returns()
+func (_Proof *ProofTransactorSession) Challenge(_file string) (*types.Transaction, error) {
+	return _Proof.Contract.Challenge(&_Proof.TransactOpts, _file)
 }
 
 // ChallengeList is a paid mutator transaction binding the contract method 0xb8aeb136.
 //
-// Solidity: function ChallengeList( string) returns(owner address, file bytes32, nonce bytes32, valid bool)
+// Solidity: function ChallengeList( string) returns(owner address, file string, valid bool)
 func (_Proof *ProofTransactor) ChallengeList(opts *bind.TransactOpts, arg0 string) (*types.Transaction, error) {
 	return _Proof.contract.Transact(opts, "ChallengeList", arg0)
 }
 
 // ChallengeList is a paid mutator transaction binding the contract method 0xb8aeb136.
 //
-// Solidity: function ChallengeList( string) returns(owner address, file bytes32, nonce bytes32, valid bool)
+// Solidity: function ChallengeList( string) returns(owner address, file string, valid bool)
 func (_Proof *ProofSession) ChallengeList(arg0 string) (*types.Transaction, error) {
 	return _Proof.Contract.ChallengeList(&_Proof.TransactOpts, arg0)
 }
 
 // ChallengeList is a paid mutator transaction binding the contract method 0xb8aeb136.
 //
-// Solidity: function ChallengeList( string) returns(owner address, file bytes32, nonce bytes32, valid bool)
+// Solidity: function ChallengeList( string) returns(owner address, file string, valid bool)
 func (_Proof *ProofTransactorSession) ChallengeList(arg0 string) (*types.Transaction, error) {
 	return _Proof.Contract.ChallengeList(&_Proof.TransactOpts, arg0)
 }
 
-// FilePledge is a paid mutator transaction binding the contract method 0x0cc33498.
+// FilePledge is a paid mutator transaction binding the contract method 0x60dadb4e.
 //
-// Solidity: function FilePledge( bytes32) returns(owner address, amount uint32, hash bytes32, valid bool)
-func (_Proof *ProofTransactor) FilePledge(opts *bind.TransactOpts, arg0 [32]byte) (*types.Transaction, error) {
+// Solidity: function FilePledge( string) returns(owner address, amount uint32, hash string, valid bool)
+func (_Proof *ProofTransactor) FilePledge(opts *bind.TransactOpts, arg0 string) (*types.Transaction, error) {
 	return _Proof.contract.Transact(opts, "FilePledge", arg0)
 }
 
-// FilePledge is a paid mutator transaction binding the contract method 0x0cc33498.
+// FilePledge is a paid mutator transaction binding the contract method 0x60dadb4e.
 //
-// Solidity: function FilePledge( bytes32) returns(owner address, amount uint32, hash bytes32, valid bool)
-func (_Proof *ProofSession) FilePledge(arg0 [32]byte) (*types.Transaction, error) {
+// Solidity: function FilePledge( string) returns(owner address, amount uint32, hash string, valid bool)
+func (_Proof *ProofSession) FilePledge(arg0 string) (*types.Transaction, error) {
 	return _Proof.Contract.FilePledge(&_Proof.TransactOpts, arg0)
 }
 
-// FilePledge is a paid mutator transaction binding the contract method 0x0cc33498.
+// FilePledge is a paid mutator transaction binding the contract method 0x60dadb4e.
 //
-// Solidity: function FilePledge( bytes32) returns(owner address, amount uint32, hash bytes32, valid bool)
-func (_Proof *ProofTransactorSession) FilePledge(arg0 [32]byte) (*types.Transaction, error) {
+// Solidity: function FilePledge( string) returns(owner address, amount uint32, hash string, valid bool)
+func (_Proof *ProofTransactorSession) FilePledge(arg0 string) (*types.Transaction, error) {
 	return _Proof.Contract.FilePledge(&_Proof.TransactOpts, arg0)
 }
 
@@ -256,6 +255,27 @@ func (_Proof *ProofSession) GetChallengeList() (*types.Transaction, error) {
 // Solidity: function GetChallengeList() returns()
 func (_Proof *ProofTransactorSession) GetChallengeList() (*types.Transaction, error) {
 	return _Proof.Contract.GetChallengeList(&_Proof.TransactOpts)
+}
+
+// GetChallengeResponse is a paid mutator transaction binding the contract method 0x8337846a.
+//
+// Solidity: function GetChallengeResponse(_file string) returns(address)
+func (_Proof *ProofTransactor) GetChallengeResponse(opts *bind.TransactOpts, _file string) (*types.Transaction, error) {
+	return _Proof.contract.Transact(opts, "GetChallengeResponse", _file)
+}
+
+// GetChallengeResponse is a paid mutator transaction binding the contract method 0x8337846a.
+//
+// Solidity: function GetChallengeResponse(_file string) returns(address)
+func (_Proof *ProofSession) GetChallengeResponse(_file string) (*types.Transaction, error) {
+	return _Proof.Contract.GetChallengeResponse(&_Proof.TransactOpts, _file)
+}
+
+// GetChallengeResponse is a paid mutator transaction binding the contract method 0x8337846a.
+//
+// Solidity: function GetChallengeResponse(_file string) returns(address)
+func (_Proof *ProofTransactorSession) GetChallengeResponse(_file string) (*types.Transaction, error) {
+	return _Proof.Contract.GetChallengeResponse(&_Proof.TransactOpts, _file)
 }
 
 // NodeLeave is a paid mutator transaction binding the contract method 0x0bd8dbe4.
@@ -300,24 +320,24 @@ func (_Proof *ProofTransactorSession) NodePledge(arg0 common.Address) (*types.Tr
 	return _Proof.Contract.NodePledge(&_Proof.TransactOpts, arg0)
 }
 
-// PledgeForFile is a paid mutator transaction binding the contract method 0xb5453e34.
+// PledgeForFile is a paid mutator transaction binding the contract method 0xe5fe2335.
 //
-// Solidity: function PledgeForFile(amount uint32, file bytes32) returns()
-func (_Proof *ProofTransactor) PledgeForFile(opts *bind.TransactOpts, amount uint32, file [32]byte) (*types.Transaction, error) {
+// Solidity: function PledgeForFile(amount uint32, file string) returns()
+func (_Proof *ProofTransactor) PledgeForFile(opts *bind.TransactOpts, amount uint32, file string) (*types.Transaction, error) {
 	return _Proof.contract.Transact(opts, "PledgeForFile", amount, file)
 }
 
-// PledgeForFile is a paid mutator transaction binding the contract method 0xb5453e34.
+// PledgeForFile is a paid mutator transaction binding the contract method 0xe5fe2335.
 //
-// Solidity: function PledgeForFile(amount uint32, file bytes32) returns()
-func (_Proof *ProofSession) PledgeForFile(amount uint32, file [32]byte) (*types.Transaction, error) {
+// Solidity: function PledgeForFile(amount uint32, file string) returns()
+func (_Proof *ProofSession) PledgeForFile(amount uint32, file string) (*types.Transaction, error) {
 	return _Proof.Contract.PledgeForFile(&_Proof.TransactOpts, amount, file)
 }
 
-// PledgeForFile is a paid mutator transaction binding the contract method 0xb5453e34.
+// PledgeForFile is a paid mutator transaction binding the contract method 0xe5fe2335.
 //
-// Solidity: function PledgeForFile(amount uint32, file bytes32) returns()
-func (_Proof *ProofTransactorSession) PledgeForFile(amount uint32, file [32]byte) (*types.Transaction, error) {
+// Solidity: function PledgeForFile(amount uint32, file string) returns()
+func (_Proof *ProofTransactorSession) PledgeForFile(amount uint32, file string) (*types.Transaction, error) {
 	return _Proof.Contract.PledgeForFile(&_Proof.TransactOpts, amount, file)
 }
 
@@ -342,46 +362,46 @@ func (_Proof *ProofTransactorSession) PledgeForNode(amount uint32, node common.A
 	return _Proof.Contract.PledgeForNode(&_Proof.TransactOpts, amount, node)
 }
 
-// ProofList is a paid mutator transaction binding the contract method 0x068fc622.
+// ProofList is a paid mutator transaction binding the contract method 0xd66a3121.
 //
-// Solidity: function ProofList( string,  uint256) returns(owner address, file bytes32, nonce bytes32, value bytes32, status uint8)
-func (_Proof *ProofTransactor) ProofList(opts *bind.TransactOpts, arg0 string, arg1 *big.Int) (*types.Transaction, error) {
-	return _Proof.contract.Transact(opts, "ProofList", arg0, arg1)
+// Solidity: function ProofList( string) returns(owner address, file string, value string, exist uint32)
+func (_Proof *ProofTransactor) ProofList(opts *bind.TransactOpts, arg0 string) (*types.Transaction, error) {
+	return _Proof.contract.Transact(opts, "ProofList", arg0)
 }
 
-// ProofList is a paid mutator transaction binding the contract method 0x068fc622.
+// ProofList is a paid mutator transaction binding the contract method 0xd66a3121.
 //
-// Solidity: function ProofList( string,  uint256) returns(owner address, file bytes32, nonce bytes32, value bytes32, status uint8)
-func (_Proof *ProofSession) ProofList(arg0 string, arg1 *big.Int) (*types.Transaction, error) {
-	return _Proof.Contract.ProofList(&_Proof.TransactOpts, arg0, arg1)
+// Solidity: function ProofList( string) returns(owner address, file string, value string, exist uint32)
+func (_Proof *ProofSession) ProofList(arg0 string) (*types.Transaction, error) {
+	return _Proof.Contract.ProofList(&_Proof.TransactOpts, arg0)
 }
 
-// ProofList is a paid mutator transaction binding the contract method 0x068fc622.
+// ProofList is a paid mutator transaction binding the contract method 0xd66a3121.
 //
-// Solidity: function ProofList( string,  uint256) returns(owner address, file bytes32, nonce bytes32, value bytes32, status uint8)
-func (_Proof *ProofTransactorSession) ProofList(arg0 string, arg1 *big.Int) (*types.Transaction, error) {
-	return _Proof.Contract.ProofList(&_Proof.TransactOpts, arg0, arg1)
+// Solidity: function ProofList( string) returns(owner address, file string, value string, exist uint32)
+func (_Proof *ProofTransactorSession) ProofList(arg0 string) (*types.Transaction, error) {
+	return _Proof.Contract.ProofList(&_Proof.TransactOpts, arg0)
 }
 
-// ProofProvide is a paid mutator transaction binding the contract method 0xf8b21ae6.
+// ProofProvide is a paid mutator transaction binding the contract method 0x0d9cb378.
 //
-// Solidity: function ProofProvide(_file bytes32, _nonce bytes32, _proof bytes32) returns()
-func (_Proof *ProofTransactor) ProofProvide(opts *bind.TransactOpts, _file [32]byte, _nonce [32]byte, _proof [32]byte) (*types.Transaction, error) {
-	return _Proof.contract.Transact(opts, "ProofProvide", _file, _nonce, _proof)
+// Solidity: function ProofProvide(_file string, _proof string) returns()
+func (_Proof *ProofTransactor) ProofProvide(opts *bind.TransactOpts, _file string, _proof string) (*types.Transaction, error) {
+	return _Proof.contract.Transact(opts, "ProofProvide", _file, _proof)
 }
 
-// ProofProvide is a paid mutator transaction binding the contract method 0xf8b21ae6.
+// ProofProvide is a paid mutator transaction binding the contract method 0x0d9cb378.
 //
-// Solidity: function ProofProvide(_file bytes32, _nonce bytes32, _proof bytes32) returns()
-func (_Proof *ProofSession) ProofProvide(_file [32]byte, _nonce [32]byte, _proof [32]byte) (*types.Transaction, error) {
-	return _Proof.Contract.ProofProvide(&_Proof.TransactOpts, _file, _nonce, _proof)
+// Solidity: function ProofProvide(_file string, _proof string) returns()
+func (_Proof *ProofSession) ProofProvide(_file string, _proof string) (*types.Transaction, error) {
+	return _Proof.Contract.ProofProvide(&_Proof.TransactOpts, _file, _proof)
 }
 
-// ProofProvide is a paid mutator transaction binding the contract method 0xf8b21ae6.
+// ProofProvide is a paid mutator transaction binding the contract method 0x0d9cb378.
 //
-// Solidity: function ProofProvide(_file bytes32, _nonce bytes32, _proof bytes32) returns()
-func (_Proof *ProofTransactorSession) ProofProvide(_file [32]byte, _nonce [32]byte, _proof [32]byte) (*types.Transaction, error) {
-	return _Proof.Contract.ProofProvide(&_Proof.TransactOpts, _file, _nonce, _proof)
+// Solidity: function ProofProvide(_file string, _proof string) returns()
+func (_Proof *ProofTransactorSession) ProofProvide(_file string, _proof string) (*types.Transaction, error) {
+	return _Proof.Contract.ProofProvide(&_Proof.TransactOpts, _file, _proof)
 }
 
 // Punish is a paid mutator transaction binding the contract method 0x11ec5d80.
