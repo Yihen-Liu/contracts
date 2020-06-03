@@ -6,15 +6,15 @@ import "./ConvertLib.sol";
 contract ProofDataPossession {
 
 	struct filePledge{
-		address  owner; //文件所有者
-		uint32 amount; //为该文件的质押量
-		string hash; //文件hash
-		bool valid; //质押是否有效
+		address  owner; //file owner
+		uint32 amount; //pledge eth amount for the file
+		string hash; //file hash
+		bool valid; //does pledge is valid
 	}
 	struct challenge {
-		address owner; //挑战者
-		string file; //挑战文件
-		bool valid; //挑战是否有效
+		address owner; //who challenge start
+		string file; //challenge file
+		bool valid;
 	}
 
 	enum ProofStatus {Init, ToBeVerified, Success, Fail}
@@ -38,32 +38,31 @@ contract ProofDataPossession {
 		owner = msg.sender;
 	}
 
-	//节点退出, 从合约地址回退剩余token
+	//when node exit from the network, smart contract will give back left eth to the node.
 	function NodeLeave() public {
 		msg.sender.transfer(NodePledge[msg.sender]);
 		NodePledge[msg.sender] = 0;
 	}
 
-	//为了保证存储服务的稳定性，存储节点需要完成一定量的质押, 质押地址为合约本身
+    //in order to keep the store service stable, store node need to pledge some eth token.
 	function PledgeForNode(uint32 amount, address node) public payable {
 		require(msg.sender.balance>amount, "balance is not enough");
 		NodePledge[node] = amount;
 	}
 
-	//存储方需要为了存储的文件，质押一定的ETH
+	//when a node want to store file to network, need to pledge some eth for the file.
 	function PledgeForFile(uint32 amount, string memory file) public payable {
 		require(msg.sender.balance>amount, "balance is not enough");
 		FilePledge[file] = filePledge({owner: msg.sender, amount:amount, valid:true, hash:file});
 	}
 
-	//下载方可以发起文件存在性挑战
+	//downloader can start a file challenge to verify that someone has the entry.
 	function Challenge(string memory _file) public {
 		ChallengeList[_file] = challenge({owner:msg.sender, file:_file, valid:true});
 	}
 
-	//存储节点获得挑战申请
-
-	function GetChallengeList() public {
+	//store will get challenge list round time.
+	function GetChallengeList() public pure returns(address) {
 /*
 		challenge[] memory cList;
 				for(uint32 i=0;i<ChallengeList.keys.length; i++){
@@ -73,6 +72,7 @@ contract ProofDataPossession {
 				}
 */
 		//return cList;
+		return address(0);
 	}
 
 	function GetChallengeResponse(string memory _file) public view  returns(address){
@@ -82,7 +82,7 @@ contract ProofDataPossession {
 		return ProofList[_file].owner;
 	}
 
-	//存储节点提供数据持有性证明, 如果已经存在，则直接退出；
+    //store node provide the data-provide-proof for the file; if this proof has been provided, exit directly.
 	function ProofProvide(string memory _file,  string memory _proof) public {
 		if(ProofList[_file].exist==1){
 			return;
@@ -91,12 +91,12 @@ contract ProofDataPossession {
 		ProofList[_file] = proof({owner:msg.sender, file:_file, value:_proof, exist:1});
 	}
 
-	//当存储节点提供假数据时，会有惩罚措施; 举报node提供的file是错误的，合约会发起挑战验证；
-	function Punish(address node, address file)public{
+    //when storage node provide error data for downloader, punish will be done.
+	function Punish(string memory node, string memory file)public{
 
 	}
 
-	//合约销毁
+	//destroy the smart contract
 	function destroy() public {
 		require(msg.sender == owner);
 		selfdestruct(msg.sender);
