@@ -17,6 +17,11 @@ contract ProofDataPossession {
 		bool valid;
 	}
 
+	struct challIndex{
+		string file;
+		uint32 status; /*0:unverified; 1: verifiying; 2:done*/
+	}
+
 	enum ProofStatus {Init, ToBeVerified, Success, Fail}
 
 	struct proof{
@@ -30,10 +35,11 @@ contract ProofDataPossession {
 	mapping(string => filePledge) public FilePledge;
 	mapping(string => challenge) public ChallengeList;
 	mapping (string => proof) public ProofList;
-
+	challIndex[4096] challArray;
 	address public owner;
-	uint32 ProfitChallengeSuccess = 1000;
-
+	uint32 _now = 0;
+	uint32 constant REWARD_AMOUNT_PER_FILE = 1000;
+	uint32 constant PUNISH_AMOUNT_PER_FILE = 3000;
 	constructor() public{
 		owner = msg.sender;
 	}
@@ -57,21 +63,22 @@ contract ProofDataPossession {
 	}
 
 	//downloader can start a file challenge to verify that someone has the entry.
-	function Challenge(string memory _file) public {
+	function Challenge(string memory _file) public returns(bool) {
+		if (challArray.length>4096) {
+			return false;
+		}
+		challArray[now]=challIndex({file:_file, status:0});
 		ChallengeList[_file] = challenge({owner:msg.sender, file:_file, valid:true});
+		return true;
 	}
 
 	//store will get challenge list round time.
-	function GetChallengeList() public pure returns(address) {
-/*
-		challenge[] memory cList;
-				for(uint32 i=0;i<ChallengeList.keys.length; i++){
-					if(ChallengeList[ChallengeList.keys[i]].valid == true){
-						cList.push(ChallengeList[ChallengeList.keys[i]]);
-					}
-				}
-*/
-		//return cList;
+	function GetChallengeList() public view returns(address) {
+		for(uint32 i=0;i<challArray.length;i++){
+			if(challArray[i].status==0){
+				//return challArray[i].file;
+			}
+		}
 		return address(0);
 	}
 
@@ -80,6 +87,19 @@ contract ProofDataPossession {
 			return address(0);
 		}
 		return ProofList[_file].owner;
+	}
+
+
+	function utilCompareInternal(string memory a, string memory b) internal pure returns (bool) {
+		if (bytes(a).length != bytes(b).length) {
+			return false;
+		}
+		for (uint i = 0; i < bytes(a).length; i ++) {
+			if(bytes(a)[i] != bytes(b)[i]) {
+				return false;
+			}
+		}
+		return true;
 	}
 
     //store node provide the data-provide-proof for the file; if this proof has been provided, exit directly.
@@ -92,8 +112,23 @@ contract ProofDataPossession {
 	}
 
     //when storage node provide error data for downloader, punish will be done.
-	function Punish(string memory node, string memory file)public{
-
+	function PunishOrReward(address payable node, string memory file, bool valid)public{
+		if(valid==true){
+			for(uint32 i=0;i<challArray.length;i++){
+				if(utilCompareInternal(file, challArray[i].file)){
+					node.transfer(REWARD_AMOUNT_PER_FILE);
+					delete challArray[i];
+					delete ChallengeList[file];
+				}
+			}
+		}else{
+			for(uint32 i=0;i<challArray.length;i++){
+				if(utilCompareInternal(file, challArray[i].file)){
+					//node.send(PUNISH_AMOUNT_PER_FILE,owner);
+					challArray[i].status=0;
+				}
+			}
+		}
 	}
 
 	//destroy the smart contract
