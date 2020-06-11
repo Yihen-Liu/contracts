@@ -3,3 +3,4 @@ raiden-contracts/
 *.abi
 dataproof/contract/_DataProof.sol
 coin
+uniswap
